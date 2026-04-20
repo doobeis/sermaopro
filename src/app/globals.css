@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: var(--font-playfair);
+  --color-brand-blue: #1e293b;
+  --color-soft-gray: #f1f5f9;
+  --color-text-dark: #334155;
+}
+
+:root {
+  --background: #f8fafc; /* slate-50 - softer gray/white */
+  --foreground: #0f172a; /* slate-900 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #f8fafc;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
