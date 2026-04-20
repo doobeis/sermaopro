@@ -1,5 +1,7 @@
 "use server";
 
+import fs from "fs";
+import path from "path";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function generateSermon({
@@ -25,6 +27,17 @@ export async function generateSermon({
   // Modelos recomendados: gemini-2.5-flash (Exclusivo para a sua chave atual)
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
+  // Carrega a base de dados do Pregador
+  let arsenalKnowledge = "";
+  try {
+    arsenalKnowledge = fs.readFileSync(
+      path.join(process.cwd(), "public", "arsenal.txt"),
+      "utf-8"
+    );
+  } catch (e) {
+    console.warn("Base de conhecimento arsenal.txt não encontrada. Seguindo sem RAG nativo.");
+  }
+
   const prompt = `
 Você é um teólogo hiper qualificado, pastor sênior e mestre em homilética.
 Sua missão é gerar um esboço de pregação estruturado, com profundidade exegética, bases originais (grego/hebraico quando enriquecedor) e aplicação primorosa.
@@ -41,6 +54,12 @@ Escreva: "Irmãos, quantas vezes tentamos silenciar o vento com a nossa própria
    - 3 Pontos Principais com aplicações práticas formidáveis.
    - Conclusão conectando a um encerramento (Doxologia ou Apelo).
 5. Versão da Bíblia exigida nesta geração: ${version}. Não desvie dessa versão ao citar!
+
+=== MATERIAL DE APOIO (SEU CÉREBRO DE REFERÊNCIA) ===
+Abaixo está o 'Arsenal de Pregações'. Use as estruturas, inspirações, curiosidades e o estilo de sermão presentes neste documento massivo para fundamentar a sua criação, de forma que o resultado pareça ter saído diretamente deste livro:
+${arsenalKnowledge.slice(0, 800000)} // Enviando o livro inteiro (limitado a um cofre seguro de tamanho)
+
+=== FIM DO MATERIAL DE APOIO ===
 
 DADOS INSERIDOS PELO PREGADOR PARA ESTE ESBOÇO:
 - TEMA / VERSÍCULO REFERÊNCIA: ${theme}
