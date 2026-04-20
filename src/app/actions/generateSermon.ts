@@ -22,8 +22,8 @@ export async function generateSermon({
   // Inicializa o cliente do Gemini
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   
-  // Modelos recomendados: gemini-pro (mais estável para todas as chaves)
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  // Modelos recomendados: gemini-2.5-flash (Exclusivo para a sua chave atual)
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const prompt = `
 Você é um teólogo hiper qualificado, pastor sênior e mestre em homilética.
