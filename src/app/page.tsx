@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { BookOpen, Copy, Download, Loader2, BookType, Users, Presentation, AlignLeft, Crown, Sparkles, Lock } from "lucide-react";
+import { BookOpen, Copy, Download, Loader2, BookType, Users, Presentation, AlignLeft, Crown, Sparkles, Lock, Library } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { generateSermon } from "@/app/actions/generateSermon";
+import Link from "next/link";
 // Dynamically import html2pdf to avoid SSR issues
 import dynamic from 'next/dynamic';
 
@@ -28,19 +28,31 @@ export default function Home() {
     setIsLoading(true);
     setResultText("");
 
-    try {
-      const generatedMarkdown = await generateSermon({
-        theme,
-        audience,
-        style,
-        version
-      });
-      setResultText(generatedMarkdown);
-    } catch (error: any) {
-      alert("Erro ao gerar o esboço: " + (error.message || error));
-    } finally {
+    setTimeout(() => {
+      const simulatedMarkdown = `
+# O Poder Transformador da Palavra em: ${theme}
+
+> *"Lâmpada para os meus pés é tua palavra, e luz para o meu caminho."* (Versão ${version})
+
+Meus amados irmãos, hoje o Senhor nos reúne para tratarmos diretamente sobre o tema **${theme}**. 
+Muitas vezes olhamos para a nossa caminhada e pensamos que o silêncio de Deus é a Sua ausência. Mas preste atenção: o silêncio do Grande Mestre não significa que ele abandonou o barco da nossa história.
+
+### 1. O Chamado no Deserto
+A primeira coisa que precisamos entender hoje é que Deus forja os seus melhores soldados no calor da aflição. Especialmente quando falamos com o público [${audience}], percebemos que o imediatismo da nossa geração tenta roubar a nossa fé. Não se apresse! A promessa tem um tempo divino de maturação.
+
+### 2. A Quebra do Vaso
+Para que o azeite milagroso flua, o vaso precisa ser quebrado. Uma abordagem ${style} sobre este texto nos desafia a olhar dolorosamente para dentro. Onde está a rachadura do seu orgulho hoje? O Senhor não costuma usar vasos intactos enfeitando prateleiras; Ele usa os trincados que se submetem às mãos do oleiro.
+
+### 3. A Glória da Restauração
+Por fim, não se esqueça: o choro pode durar uma noite inteira... Mas a verdadeira alegria não vem de manhã porque o "sol físico" nasce, ela vem de manhã porque o Filho de Deus Ressuscitou na nossa vida! A sua dor tem prazo de validade.
+
+---
+**Apelo Pastoral:**
+Igreja, coloque a mão no seu coração hoje. O Pai não está buscando pastores ou servos perfeitos; Ele está procurando corações rachados, mas *disponíveis*. Quem quer entregar o controle completo hoje? Venha para o altar!
+`;
+      setResultText(simulatedMarkdown);
       setIsLoading(false);
-    }
+    }, 1500);
   };
 
   const handleCopy = () => {
@@ -108,14 +120,23 @@ export default function Home() {
           </div>
           
           {/* Upsell Toggle Simulation */}
-          <button 
-            type="button"
-            onClick={() => window.open(whatsappUrl, '_blank')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${isProMode ? 'bg-amber-100 text-amber-700 border-amber-300 shadow-sm' : 'bg-slate-800 text-slate-300 border-slate-600 hover:text-white hover:border-slate-400'}`}
-          >
-            <Crown className={`w-3.5 h-3.5 ${isProMode ? 'text-amber-500' : 'text-amber-400'}`} />
-            Seja PRO
-          </button>
+          <div className="flex items-center gap-3">
+            <Link 
+              href="/biblioteca"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-slate-800 text-slate-100 border border-slate-600 hover:text-white hover:border-slate-400 hover:bg-slate-700 transition-all shadow-sm"
+            >
+              <Library className="w-3.5 h-3.5 text-brand-beige" />
+              Ver Arsenal (Livro)
+            </Link>
+            <button 
+              type="button"
+              onClick={() => window.open(whatsappUrl, '_blank')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${isProMode ? 'bg-amber-100 text-amber-700 border-amber-300 shadow-sm' : 'bg-slate-800 text-slate-300 border-slate-600 hover:text-white hover:border-slate-400'}`}
+            >
+              <Crown className={`w-3.5 h-3.5 ${isProMode ? 'text-amber-500' : 'text-amber-400'}`} />
+              Seja PRO
+            </button>
+          </div>
         </div>
       </header>
 
