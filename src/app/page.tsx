@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { BookOpen, Copy, Download, Loader2, BookType, Users, Presentation, AlignLeft, Crown, Sparkles, Lock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { generateSermon } from "@/app/actions/generateSermon";
 // Dynamically import html2pdf to avoid SSR issues
 import dynamic from 'next/dynamic';
 
@@ -27,46 +28,19 @@ export default function Home() {
     setIsLoading(true);
     setResultText("");
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    const simulatedMarkdown = `
-# Esboço: ${theme}
-
-**Público-alvo:** ${audience}  
-**Estilo:** ${style}  
-**Versão Bíblica:** ${version}
-
----
-
-## 1. Introdução
-* **Quebra-gelo:** "Quantos aqui já sentiram que estavam lutando uma batalha onde as chances de vitória pareciam matematicamente impossíveis? Aquela sensação de que o vento é forte demais para o seu barco, ou que os recursos não dão conta do tamanho do problema?"
-* **Contexto Bíblico:** "Quando olhamos para as Escrituras, e especialmente o tema de ${theme}, não vemos heróis inquebráveis ou super-homens. Vemos pessoas exatamente com as nossas dores. No original bíblico, muitas vezes a palavra usada para provação não significa 'destruição', mas 'o fogo que revela o ouro'. É exatamente nesse ponto de pressão que Deus decide mudar a história."
-* **Proposição Principal:** O grande princípio para esta noite é este: O tamanho da sua crise não define o seu destino; o que garante a sua vitória é a magnitude do Deus que já está no barco com você.
-
-## 2. Desenvolvimento
-
-### Ponto 1: A Promessa que Rompe a Lógica Humana
-*(Referência chave em evidência - ${version})*
-* "Observem atentamente o que o texto sagrado nos mostra. O Senhor nem sempre promete que a tempestade vai acabar no primeiro clamor, Ele promete que, com Ele, o seu barco jamais irá afundar. A lógica humana manda você focar nas ondas, mas a voz do alto manda você olhar para Cristo. Se você está enfrentando lutas pesadas no seu lar ou profissão, sua âncora não pode ser o saldo bancário, tem que ser a fidelidade eterna de Deus!"
-
-### Ponto 2: O Desafio de Soltar o Controle
-* "Irmãos, o maior obstáculo para o seu milagre muitas vezes não é o inimigo lá fora, mas a sua tentativa de controlar tudo aqui dentro. Nós oramos pedindo socorro, mas queremos ditar para Deus *como*, *onde* e *quando* Ele deve assinar o milagre. A Palavra nos confronta hoje: enquanto você tentar segurar as rédeas da sua vida com as próprias mãos, não haverá espaço para o impossível pulsar de verdade em você."
-
-### Ponto 3: A Resolução Cristocêntrica
-* "No clímax desta narrativa (e de todas as Escrituras), o livramento acontece não pela força do braço, mas pela entrega do coração. Aponte seus olhos para Jesus agora: na Cruz, o que o mundo leu como 'fracasso total', Deus coroou como a Redenção da Humanidade! Aquilo que estava morto no seu Ministério, na sua Família ou nas suas emoções, diante do túmulo vazio de Cristo, é apenas adubo para uma nova vida germinar."
-
-## 3. Conclusão
-* **Resumo de Aplicação:** "Recapitulando: você não foi chamado para entender todos os ventos, foi chamado para confiar naquele que caminha sobre eles e, principalmente, soltar as rédeas do seu próprio coração aos pés da cruz."
-* **Apelo Pastoral Dinâmico:** "Se você entrou neste lugar hoje esmagado pelo peso da incerteza, eu quero desafiar você a levantar sua mão agora mesmo, num ato profético de rendição. Nós vamos parar de viver baseados no que vemos e começar agir com base Naquele que nos prometeu!"
-* **Oração Final:** "Deus Todo-Poderoso, nós quebramos agora o jugo da paralisia e o medo do fracasso na vida desta igreja. Derrama o fogo do Teu Espírito sobre esta Palavra e que o efeito dela seja permanente. No Nome imbatível de Jesus, Amém."
-
----
-*Gerado por PregAI ✨ (A sabedoria da Palavra, potencializada)*
-`;
-
-    setResultText(simulatedMarkdown);
-    setIsLoading(false);
+    try {
+      const generatedMarkdown = await generateSermon({
+        theme,
+        audience,
+        style,
+        version
+      });
+      setResultText(generatedMarkdown);
+    } catch (error: any) {
+      alert("Erro ao gerar o esboço: " + (error.message || error));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCopy = () => {
