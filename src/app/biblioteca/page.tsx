@@ -19,12 +19,12 @@ export default async function BibliotecaPage() {
       {/* Header */}
       <header className="bg-brand-blue text-white shadow-md sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="mr-2 hover:bg-slate-800/50 p-2 rounded-full transition-colors">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link href="/" className="mr-1 sm:mr-2 hover:bg-slate-800/50 p-2 rounded-full transition-colors">
               <ArrowLeft className="w-5 h-5" />
             </Link>
-            <BookType className="w-8 h-8 text-slate-200" />
-            <h1 className="text-2xl font-bold tracking-tight">Sermão Pro <span className="font-light opacity-80 text-lg">| Biblioteca</span></h1>
+            <BookType className="hidden sm:block w-8 h-8 text-slate-200" />
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Sermão Pro <span className="hidden sm:inline font-light opacity-80 text-base sm:text-lg">| Biblioteca</span></h1>
           </div>
           
           <button 
@@ -52,8 +52,8 @@ export default async function BibliotecaPage() {
           
           {/* Virtualized/Scrollable Container for huge text */}
           <div className="relative">
-            <div className="h-[70vh] overflow-y-auto bg-slate-50 border border-slate-200 rounded-lg p-6 prose prose-slate prose-sm max-w-none shadow-inner">
-              <pre className="whitespace-pre-wrap font-serif text-base leading-relaxed text-slate-700">
+            <div className="h-[70vh] overflow-y-auto bg-slate-50 border border-slate-200 rounded-lg p-4 sm:p-6 prose prose-slate prose-sm max-w-none shadow-inner">
+              <pre className="whitespace-pre-wrap break-words font-serif text-sm sm:text-base leading-relaxed text-slate-700">
                 {arsenalContent}
               </pre>
             </div>

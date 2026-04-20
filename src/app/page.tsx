@@ -120,21 +120,21 @@ Igreja, coloque a mão no seu coração hoje. O Pai não está buscando pastores
           </div>
           
           {/* Upsell Toggle Simulation */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link 
               href="/biblioteca"
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-slate-800 text-slate-100 border border-slate-600 hover:text-white hover:border-slate-400 hover:bg-slate-700 transition-all shadow-sm"
             >
-              <Library className="w-3.5 h-3.5 text-brand-beige" />
-              Ver Arsenal (Livro)
+              <Library className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-amber-100" />
+              <span className="hidden sm:inline">Ver Arsenal (Livro)</span>
             </Link>
             <button 
               type="button"
               onClick={() => window.open(whatsappUrl, '_blank')}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${isProMode ? 'bg-amber-100 text-amber-700 border-amber-300 shadow-sm' : 'bg-slate-800 text-slate-300 border-slate-600 hover:text-white hover:border-slate-400'}`}
             >
-              <Crown className={`w-3.5 h-3.5 ${isProMode ? 'text-amber-500' : 'text-amber-400'}`} />
-              Seja PRO
+              <Crown className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isProMode ? 'text-amber-500' : 'text-amber-400'}`} />
+              <span className="hidden sm:inline">Seja PRO</span>
             </button>
           </div>
         </div>
