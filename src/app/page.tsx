@@ -261,7 +261,7 @@ export default function Home() {
                 
                 {/* Result Card */}
                 <div className="bg-white flex-1 p-8 rounded-t-2xl border border-slate-200/60 shadow-sm border-b-0" ref={resultRef}>
-                  <div className="prose prose-slate prose-headings:font-sans font-serif prose-headings:text-brand-blue prose-h1:text-3xl prose-h2:text-xl max-w-none text-slate-800 leading-relaxed">
+                  <div className="prose prose-slate prose-headings:text-brand-blue prose-h1:text-3xl prose-h2:text-xl max-w-none text-slate-800 leading-relaxed">
                     <ReactMarkdown>{resultText}</ReactMarkdown>
                   </div>
                 </div>
