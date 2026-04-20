@@ -22,8 +22,8 @@ export async function generateSermon({
   // Inicializa o cliente do Gemini
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   
-  // Modelos recomendados: gemini-2.5-flash para rapidez, gemini-1.5-pro para complexidade
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  // Modelos recomendados: gemini-1.5-flash para rapidez e ampla disponibilidade
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt = `
 Você é um teólogo hiper qualificado, pastor sênior e mestre em homilética.
@@ -51,8 +51,8 @@ DADOS INSERIDOS PELO PREGADOR PARA ESTE ESBOÇO:
   try {
     const result = await model.generateContent(prompt);
     return result.response.text();
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erro interno do Gemini backend:", error);
-    throw new Error("Ops... Nossas engrenagens divinas falharam ao comunicar com a nuvem do Google.");
+    throw new Error("Ops... Nossas engrenagens divinas falharam ao comunicar com a nuvem do Google. Detalhe técnico: " + (error.message || "Falha desconhecida"));
   }
 }
