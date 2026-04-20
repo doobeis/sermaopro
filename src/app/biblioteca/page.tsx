@@ -1,17 +1,7 @@
-import fs from 'fs';
-import path from 'path';
 import Link from 'next/link';
-import { ArrowLeft, BookType, Crown, Info } from 'lucide-react';
+import { ArrowLeft, BookType, Crown, Info, Download } from 'lucide-react';
 
-export default async function BibliotecaPage() {
-  // Read the raw arsenal statically on the server
-  let arsenalContent = "";
-  try {
-    arsenalContent = fs.readFileSync(path.join(process.cwd(), 'public', 'arsenal.txt'), 'utf-8');
-  } catch (e) {
-    arsenalContent = "O arquivo do livro (arsenal.txt) não foi encontrado no servidor.";
-  }
-
+export default function BibliotecaPage() {
   const whatsappUrl = "https://wa.me/554497475235?text=Ol%C3%A1%21%20Gostaria%20de%20assinar%20o%20plano%20PRO%20do%20Serm%C3%A3o%20Pro%20%28PregAI%29.";
 
   return (
@@ -37,26 +27,36 @@ export default async function BibliotecaPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-10">
-        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/60 mb-6">
-          <div className="flex items-start gap-4 p-4 mb-8 bg-blue-50 text-blue-900 rounded-xl border border-blue-100">
-            <Info className="w-6 h-6 flex-shrink-0 text-blue-600" />
-            <div>
-              <h3 className="font-semibold text-blue-950 mb-1">Acervo Original Completo</h3>
-              <p className="text-sm">
-                Abaixo está o acesso irrestrito ao conteúdo bruto do <strong>"Arsenal de Pregações para Pregadores"</strong> (Autor: Genésio Santos). 
-                São centenas de temas para sua consulta gratuita offline. Utilize o atalho <code>Ctrl + F</code> no seu teclado para pesquisar palavras-chave específicas.
-              </p>
+      <main className="max-w-5xl mx-auto px-4 md:px-6 py-8">
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 mb-6 flex flex-col h-[80vh]">
+          <div className="flex items-center justify-between gap-4 p-4 mb-4 bg-blue-50 text-blue-900 rounded-xl border border-blue-100 flex-shrink-0">
+            <div className="flex items-start gap-4">
+              <Info className="w-6 h-6 flex-shrink-0 text-blue-600 mt-1" />
+              <div>
+                <h3 className="font-semibold text-blue-950 mb-1">Acervo Original Completo</h3>
+                <p className="text-sm">
+                  Deus o abençoe! Abaixo está o documento nativo do <strong>"Arsenal de Pregações para Pregadores"</strong>.
+                  Sinta-se livre para ler toda a sabedoria contida nas 500 páginas e se inspirar.
+                </p>
+              </div>
             </div>
+            <a 
+              href="/livro.pdf" 
+              download 
+              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              Baixar PDF
+            </a>
           </div>
           
-          {/* Virtualized/Scrollable Container for huge text */}
-          <div className="relative">
-            <div className="h-[70vh] overflow-y-auto bg-slate-50 border border-slate-200 rounded-lg p-4 sm:p-6 prose prose-slate prose-sm max-w-none shadow-inner">
-              <pre className="whitespace-pre-wrap break-words font-serif text-sm sm:text-base leading-relaxed text-slate-700">
-                {arsenalContent}
-              </pre>
-            </div>
+          {/* Iframe embutindo o Livro PDF Nativo */}
+          <div className="relative w-full flex-grow border border-slate-200 rounded-lg overflow-hidden shadow-inner bg-slate-100">
+            <iframe 
+              src="/livro.pdf"
+              title="Arsenal de Pregações PDF"
+              className="absolute inset-0 w-full h-full"
+            />
           </div>
         </div>
       </main>
