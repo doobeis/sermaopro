@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { BookOpen, Copy, Download, Loader2, BookType, Users, Presentation, AlignLeft, Crown, Sparkles, Lock, Library } from "lucide-react";
+import { BookOpen, Copy, Download, Loader2, BookType, Users, Presentation, AlignLeft, Crown, Sparkles, Lock, Library, ChevronDown, ChevronUp, Zap } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
+import { generateSermon } from "@/app/actions/generateSermon";
 // Dynamically import html2pdf to avoid SSR issues
 import dynamic from 'next/dynamic';
 
@@ -15,44 +16,42 @@ export default function Home() {
   
   const [isLoading, setIsLoading] = useState(false);
   const [resultText, setResultText] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [isProMode, setIsProMode] = useState(false); // In production, this comes from your database
   
   const whatsappUrl = "https://wa.me/554497475235?text=Ol%C3%A1%21%20Gostaria%20de%20assinar%20o%20plano%20PRO%20do%20Serm%C3%A3o%20Pro%20%28PregAI%29%20para%20liberar%20Slides%2C%20Ilustra%C3%A7%C3%B5es%20e%20PDFs.";
 
   const resultRef = useRef<HTMLDivElement>(null);
 
-  const handleGenerate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!theme.trim()) return;
+  const presetThemes = [
+    "Fé na Tempestade",
+    "Restauração da Família",
+    "Propósito de Vida"
+  ];
+
+  const handleGenerate = async (e?: React.FormEvent, directTheme?: string) => {
+    if (e) e.preventDefault();
+    const finalTheme = directTheme || theme;
+    if (!finalTheme.trim()) return;
+
+    if (directTheme) setTheme(directTheme);
 
     setIsLoading(true);
     setResultText("");
 
-    setTimeout(() => {
-      const simulatedMarkdown = `
-# O Poder Transformador da Palavra em: ${theme}
-
-> *"Lâmpada para os meus pés é tua palavra, e luz para o meu caminho."* (Versão ${version})
-
-Meus amados irmãos, hoje o Senhor nos reúne para tratarmos diretamente sobre o tema **${theme}**. 
-Muitas vezes olhamos para a nossa caminhada e pensamos que o silêncio de Deus é a Sua ausência. Mas preste atenção: o silêncio do Grande Mestre não significa que ele abandonou o barco da nossa história.
-
-### 1. O Chamado no Deserto
-A primeira coisa que precisamos entender hoje é que Deus forja os seus melhores soldados no calor da aflição. Especialmente quando falamos com o público [${audience}], percebemos que o imediatismo da nossa geração tenta roubar a nossa fé. Não se apresse! A promessa tem um tempo divino de maturação.
-
-### 2. A Quebra do Vaso
-Para que o azeite milagroso flua, o vaso precisa ser quebrado. Uma abordagem ${style} sobre este texto nos desafia a olhar dolorosamente para dentro. Onde está a rachadura do seu orgulho hoje? O Senhor não costuma usar vasos intactos enfeitando prateleiras; Ele usa os trincados que se submetem às mãos do oleiro.
-
-### 3. A Glória da Restauração
-Por fim, não se esqueça: o choro pode durar uma noite inteira... Mas a verdadeira alegria não vem de manhã porque o "sol físico" nasce, ela vem de manhã porque o Filho de Deus Ressuscitou na nossa vida! A sua dor tem prazo de validade.
-
----
-**Apelo Pastoral:**
-Igreja, coloque a mão no seu coração hoje. O Pai não está buscando pastores ou servos perfeitos; Ele está procurando corações rachados, mas *disponíveis*. Quem quer entregar o controle completo hoje? Venha para o altar!
-`;
-      setResultText(simulatedMarkdown);
+    try {
+      const generatedMarkdown = await generateSermon({
+        theme: finalTheme,
+        audience,
+        style,
+        version
+      });
+      setResultText(generatedMarkdown);
+    } catch (error: any) {
+      alert("Erro ao gerar o esboço: " + (error.message || error));
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleCopy = () => {
@@ -151,84 +150,117 @@ Igreja, coloque a mão no seu coração hoje. O Pai não está buscando pastores
                 Configurar Esboço
               </h2>
               
-              <form onSubmit={handleGenerate} className="space-y-5">
+              <form onSubmit={handleGenerate} className="space-y-4">
                 {/* Input: Tema */}
-                <div className="space-y-1.5">
-                  <label htmlFor="theme" className="block text-sm font-medium text-slate-700">Tema ou Versículo Chave</label>
+                <div className="space-y-2">
+                  <label htmlFor="theme" className="block text-sm font-medium text-slate-700">O que arde no seu coração?</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <BookOpen className="h-4 w-4 text-slate-400" />
+                      <BookOpen className="h-5 w-5 text-slate-400" />
                     </div>
                     <input
                       id="theme"
                       type="text"
                       required
-                      placeholder="Ex: João 3:16 ou Amor ao próximo"
+                      placeholder="Ex: João 3:16 ou Supere o Medo"
                       value={theme}
                       onChange={(e) => setTheme(e.target.value)}
-                      className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors bg-slate-50 sm:text-sm text-slate-900 placeholder:text-slate-400"
+                      className="block w-full pl-11 pr-3 py-3.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors bg-white font-medium text-base text-slate-900 placeholder:text-slate-400"
                     />
                   </div>
-                </div>
-
-                {/* Select: Público-alvo */}
-                <div className="space-y-1.5">
-                  <label className="block text-sm font-medium text-slate-700">Público-alvo</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Users className="h-4 w-4 text-slate-400" />
-                    </div>
-                    <select
-                      value={audience}
-                      onChange={(e) => setAudience(e.target.value)}
-                      className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-slate-50 sm:text-sm text-slate-900 appearance-none"
-                    >
-                      <option value="Geral">Geral</option>
-                      <option value="Jovens">Jovens</option>
-                      <option value="Casais">Casais</option>
-                      <option value="Crianças">Crianças</option>
-                      <option value="Liderança">Liderança</option>
-                    </select>
+                  
+                  {/* Pílulas Sugestivas (1 Clique) */}
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {presetThemes.map((preset) => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => handleGenerate(undefined, preset)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 hover:bg-brand-blue hover:text-white border border-slate-200 hover:border-brand-blue text-xs font-medium transition-colors"
+                      >
+                        <Zap className="w-3 h-3" />
+                        {preset}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
-                {/* Select: Estilo da Pregação */}
-                <div className="space-y-1.5">
-                  <label className="block text-sm font-medium text-slate-700">Estilo da Pregação</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Presentation className="h-4 w-4 text-slate-400" />
-                    </div>
-                    <select
-                      value={style}
-                      onChange={(e) => setStyle(e.target.value)}
-                      className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-slate-50 sm:text-sm text-slate-900 appearance-none"
-                    >
-                      <option value="Expositiva">Expositiva</option>
-                      <option value="Temática">Temática</option>
-                      <option value="Evangelística">Evangelística</option>
-                    </select>
-                  </div>
-                </div>
+                {/* Advanced Options Toggle */}
+                <button
+                  type="button"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="w-full flex items-center justify-between px-1 py-3 border-b border-dashed border-slate-200 text-sm font-medium text-slate-500 hover:text-brand-blue transition-colors"
+                >
+                  <span className="flex items-center gap-2">
+                    <AlignLeft className="w-4 h-4" />
+                    Configurações Avançadas
+                  </span>
+                  {showAdvanced ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
 
-                {/* Select: Versão da Bíblia */}
-                <div className="space-y-1.5">
-                  <label className="block text-sm font-medium text-slate-700">Versão da Bíblia</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <BookType className="h-4 w-4 text-slate-400" />
+                {/* Hidden Advanced Options */}
+                {showAdvanced && (
+                  <div className="space-y-4 pt-2 pb-4 bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-inner">
+                    {/* Select: Público-alvo */}
+                    <div className="space-y-1.5">
+                      <label className="block text-sm font-medium text-slate-700">Público-alvo</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Users className="h-4 w-4 text-slate-400" />
+                        </div>
+                        <select
+                          value={audience}
+                          onChange={(e) => setAudience(e.target.value)}
+                          className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg bg-white sm:text-sm text-slate-900 appearance-none"
+                        >
+                          <option value="Geral">Geral</option>
+                          <option value="Jovens">Jovens</option>
+                          <option value="Casais">Casais</option>
+                          <option value="Crianças">Crianças</option>
+                          <option value="Liderança">Liderança</option>
+                        </select>
+                      </div>
                     </div>
-                    <select
-                      value={version}
-                      onChange={(e) => setVersion(e.target.value)}
-                      className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-slate-50 sm:text-sm text-slate-900 appearance-none"
-                    >
-                      <option value="NVI">Nova Versão Internacional (NVI)</option>
-                      <option value="Almeida">Almeida Revista e Corrigida (ARC/ARA)</option>
-                      <option value="ARC">Nova Tradução na Linguagem de Hoje (NTLH)</option>
-                    </select>
+
+                    {/* Select: Estilo da Pregação */}
+                    <div className="space-y-1.5">
+                      <label className="block text-sm font-medium text-slate-700">Estilo da Pregação</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Presentation className="h-4 w-4 text-slate-400" />
+                        </div>
+                        <select
+                          value={style}
+                          onChange={(e) => setStyle(e.target.value)}
+                          className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg bg-white sm:text-sm text-slate-900 appearance-none"
+                        >
+                          <option value="Expositiva">Expositiva</option>
+                          <option value="Temática">Temática</option>
+                          <option value="Evangelística">Evangelística</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Select: Versão da Bíblia */}
+                    <div className="space-y-1.5">
+                      <label className="block text-sm font-medium text-slate-700">Versão da Bíblia</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <BookType className="h-4 w-4 text-slate-400" />
+                        </div>
+                        <select
+                          value={version}
+                          onChange={(e) => setVersion(e.target.value)}
+                          className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg bg-white sm:text-sm text-slate-900 appearance-none"
+                        >
+                          <option value="NVI">Nova Versão Internacional (NVI)</option>
+                          <option value="Almeida">Almeida Revista e Corrigida (ARC/ARA)</option>
+                          <option value="ARC">Nova Tradução na Linguagem de Hoje (NTLH)</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Submit Action */}
                 <button
